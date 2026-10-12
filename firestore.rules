@@ -12,6 +12,22 @@ service cloud.firestore {
       allow get: if request.auth != null && request.auth.uid == uid;
       allow list, create, update, delete: if false;
     }
+    match /materials/{materialId} {
+      allow read: if member();
+      allow create, update: if member()
+        && request.resource.data.keys().hasOnly([
+          'id', 'name', 'type', 'unitCost', 'createdAt', 'updatedBy'
+        ])
+        && request.resource.data.id == materialId
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.type in ['mdf', 'termo', 'otro']
+        && request.resource.data.unitCost is number
+        && request.resource.data.unitCost >= 0
+        && request.resource.data.unitCost < 1000000000;
+      allow delete: if false;
+    }
     match /orders/{orderId} {
       allow read: if member();
       allow create, update: if member()
