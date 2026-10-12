@@ -151,7 +151,11 @@ html[data-theme="dark"] .mobile-nav .nav.active{background:#21382f;color:#8be2be
 
     <section id="new-view" class="view hidden">
       <div class="section-head" style="margin-top:0"><div><h2 id="order-form-heading">Nueva orden de trabajo</h2><div class="section-sub">Tus 4 datos habituales y un par de detalles opcionales</div></div></div>
-      <form id="order-form" class="grid2" autocomplete="off">
+      <div class="paper paper-pad" style="margin-bottom:18px"><div class="form-subtitle">Cargar un trabajo frecuente</div><div class="form-grid">
+<div class="field"><label for="order-work">Trabajo</label><select id="order-work"><option value="">Pedido personalizado</option></select></div>
+<div class="field"><label for="order-work-qty">Cantidad de trabajos</label><input id="order-work-qty" type="number" min="1" max="10000" step="1" value="1" inputmode="numeric"></div>
+<div class="span2"><button id="apply-work" class="btn btn-soft" type="button">Cargar precio y materiales</button></div>
+</div><p class="section-sub" style="margin-top:12px">Después de cargarlo puedes modificar el precio, materiales y anticipo.</p></div><form id="order-form" class="grid2" autocomplete="off">
         <div class="paper paper-pad"><div class="form-grid">
           <div class="field"><label id="order-price-label" for="order-total">1. Precio final del pedido ($) *</label><input id="order-total" type="number" min="0.01" step="0.01" placeholder="Ej. 750" required><small id="order-price-help" style="color:var(--muted)">El precio capturado será el total a cobrar.</small></div>
           <div class="field"><label for="order-customer">Cliente (opcional)</label><input id="order-customer" maxlength="100" placeholder="Nombre del cliente"></div>
@@ -172,6 +176,17 @@ html[data-theme="dark"] .mobile-nav .nav.active{background:#21382f;color:#8be2be
     <section id="expenses-view" class="view hidden"><div class="section-head" style="margin-top:0"><div><h2>Compras y gastos</h2><div class="section-sub">Registra lo que pagas, separado de los materiales consumidos en cada pedido</div></div></div><div class="grid2"><div><div class="paper paper-pad"><div class="form-subtitle">Registrar movimiento</div><form id="expense-form" class="form-grid"><div class="field span2"><label for="expense-desc">Concepto *</label><input id="expense-desc" required placeholder="Ej. 10 termos, hojas MDF o publicidad" maxlength="200"></div><div class="field"><label for="expense-type">Categoría *</label><select id="expense-type"><option value="inventory">Compra de inventario</option><option value="operating">Gasto operativo</option><option value="equipment">Inversión en equipo</option></select></div><div class="field"><label for="expense-amount">Importe ($) *</label><input id="expense-amount" required type="number" min="0.01" step="0.01"></div><div class="field"><label for="expense-date">Fecha</label><input id="expense-date" type="date" required></div><div class="field"><label for="expense-notes">Detalle (opcional)</label><input id="expense-notes" placeholder="Proveedor, cantidad..." maxlength="150"></div><div class="span2"><button class="btn btn-primary" type="submit">＋ Guardar movimiento</button></div></form></div><div class="section-head"><h2>Historial de movimientos</h2></div><div id="expense-list" class="expense-list"></div></div><div><div class="paper paper-pad short-summary"><div class="form-subtitle">Resumen de egresos</div><div class="summary-row"><span>Inventario</span><strong id="expense-inventory">$0</strong></div><div class="summary-row"><span>Operación</span><strong id="expense-operating">$0</strong></div><div class="summary-row"><span>Equipos</span><strong id="expense-equipment">$0</strong></div><hr style="width:100%;border:0;border-top:1px solid var(--line)"><div class="summary-row"><strong>Total pagado</strong><strong id="expense-total">$0</strong></div><div class="info-note"><strong>Ejemplo:</strong> compraste varios termos. Registra la compra como inventario. Después, cuando vendas uno, agrega su costo unitario al pedido. Así distingues efectivo invertido de costo del producto vendido.</div></div></div></div></section>
 
     <section id="settings-view" class="view hidden"><div class="paper paper-pad" style="margin-bottom:24px">
+<div class="form-subtitle">Trabajos frecuentes</div>
+<p class="section-sub" style="margin-bottom:18px">Cada unidad utiliza una hoja MDF. Guarda el precio y la presentación de la hoja.</p>
+<form id="work-form" class="form-grid">
+<div class="field"><label for="work-name">Nombre del trabajo</label><input id="work-name" maxlength="120" placeholder="Altar / Altar de mascota / Portarretrato" required></div>
+<div class="field"><label for="work-price">Precio por trabajo ($)</label><input id="work-price" type="number" min="0.01" step="0.01" max="999999999" inputmode="decimal" required></div>
+<div class="field span2"><label for="work-material">Hoja MDF utilizada</label><select id="work-material" required><option value="">Primero guarda la hoja en el catálogo de materiales</option></select></div>
+<div class="span2 form-footer"><button id="work-save" class="btn btn-primary" type="submit">Guardar trabajo</button><button id="work-cancel" class="btn btn-ghost hidden" type="button">Cancelar edición</button></div>
+</form>
+<div class="info-note" style="margin:18px 0">Precio antes del incremento por factura. Cambiarlo no modifica pedidos anteriores. También puedes ajustar el precio al crear cada pedido.</div>
+<div id="work-list" class="expense-list"></div>
+</div><div class="paper paper-pad" style="margin-bottom:24px">
 <div class="form-subtitle">Catálogo de materiales</div>
 <p class="section-sub" style="margin-bottom:18px">Guarda cada presentación y su costo. En Nueva orden selecciona el material y cuántas unidades utilizaste.</p>
 <form id="catalog-form" class="form-grid">
