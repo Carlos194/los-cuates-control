@@ -1,0 +1,7 @@
+node_modules/
+.env
+.env.*
+*service-account*.json
+*serviceAccount*.json
+los-cuates-respaldo-*.json
+los-cuates-pedidos-*.csv

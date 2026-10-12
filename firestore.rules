@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function member() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/members/$(request.auth.uid));
+    }
+    // Los usuarios no pueden autorizarse a sí mismos.
+    // Crea los miembros desde la consola de Firebase con ID = UID de Authentication.
+    match /members/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+    match /orders/{orderId} {
+      allow read: if member();
+      allow create, update: if member()
+        && request.resource.data.keys().hasOnly([
+          'id', 'code', 'customer', 'description', 'total', 'materials',
+          'extras', 'invoice', 'vatRate', 'status', 'notes',
+          'payments', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.total is number
+        && request.resource.data.total > 0
+        && request.resource.data.total < 1000000000
+        && request.resource.data.materials is list
+        && request.resource.data.materials.size() <= 50
+        && request.resource.data.payments is list
+        && request.resource.data.payments.size() <= 250;
+      allow delete: if false;
+    }
+    match /expenses/{expenseId} {
+      allow read: if member();
+      allow create, update: if member()
+        && request.resource.data.keys().hasOnly([
+          'id', 'description', 'amount', 'type', 'date', 'notes',
+          'createdAt', 'createdBy', 'origin'
+        ])
+        && request.resource.data.amount is number
+        && request.resource.data.amount > 0
+        && request.resource.data.amount < 1000000000;
+      allow delete: if false;
+    }
+    // Todo lo demás queda bloqueado.
+  }
+}
