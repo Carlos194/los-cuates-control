@@ -3,7 +3,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function member() {
       return request.auth != null &&
-        exists(/databases/$(database)/documents/members/$(request.auth.uid));
+        exists(/databases/$(database)/documents/members/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/members/$(request.auth.uid)).data.active == true;
     }
     // Los usuarios no pueden autorizarse a sí mismos.
     // Crea los miembros desde la consola de Firebase con ID = UID de Authentication.
