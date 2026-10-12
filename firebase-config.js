@@ -1,13 +1,9 @@
-/*
-  1) Firebase Console > Configuración del proyecto > Tus apps > App web.
-  2) Copia los datos de firebaseConfig debajo (NO una clave de servicio privada).
-  3) Habilita Authentication, Firestore y sus reglas ANTES de publicar.
-*/
+// Configuración pública de la app web. El acceso a los datos se controla con Authentication y reglas de Firestore.
 export const firebaseConfig = {
-  apiKey: "PEGA_AQUI_API_KEY",
-  authDomain: "TU_PROYECTO.firebaseapp.com",
-  projectId: "TU_PROYECTO",
-  storageBucket: "TU_PROYECTO.firebasestorage.app",
-  messagingSenderId: "PEGA_AQUI_SENDER_ID",
-  appId: "PEGA_AQUI_APP_ID"
+  apiKey: "AIzaSyAPstcq3IiTTE8opgjuLsjRjfp35GLLte8",
+  authDomain: "los-cuates-corte-laser.firebaseapp.com",
+  projectId: "los-cuates-corte-laser",
+  storageBucket: "los-cuates-corte-laser.firebasestorage.app",
+  messagingSenderId: "39763081775",
+  appId: "1:39763081775:web:5ed9fc5f45cc0783f8e4da"
 };
