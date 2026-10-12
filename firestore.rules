@@ -28,6 +28,23 @@ service cloud.firestore {
         && request.resource.data.unitCost < 1000000000;
       allow delete: if false;
     }
+    match /works/{workId} {
+      allow read: if member();
+      allow create, update: if member()
+        && request.resource.data.keys().hasOnly([
+          'id', 'name', 'price', 'materialId', 'createdAt', 'updatedAt', 'updatedBy'
+        ])
+        && request.resource.data.id == workId
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.price is number
+        && request.resource.data.price > 0
+        && request.resource.data.price < 1000000000
+        && request.resource.data.materialId is string
+        && exists(/databases/$(database)/documents/materials/$(request.resource.data.materialId));
+      allow delete: if false;
+    }
     match /orders/{orderId} {
       allow read: if member();
       allow create, update: if member()
