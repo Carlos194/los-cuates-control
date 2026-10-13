@@ -166,7 +166,7 @@ html[data-theme="dark"] .mobile-nav .nav.active{background:#21382f;color:#8be2be
           <div class="field"><label for="order-status">Estado</label><select id="order-status"><option value="waiting">Por iniciar</option><option value="progress">En producción</option><option value="ready">Listo para entregar</option><option value="done">Entregado</option><option value="cancel">Cancelado</option></select></div>
           <div class="field"><label for="order-extras">Otros costos exclusivos ($)</label><input id="order-extras" type="number" min="0" step="0.01" value="0"><small style="color:#8a99a1">Diseño, empaque, tiempo, etc. No volverlos a registrar como gasto general.</small></div>
           <div class="field span2"><label for="order-notes">Notas (opcional)</label><textarea id="order-notes" placeholder="Color, entrega, indicaciones..."></textarea></div>
-        </div><div class="info-note" style="margin-top:18px"><label style="display:flex;align-items:center;gap:10px;font-weight:700;color:var(--ink);cursor:pointer"><input id="save-as-work" type="checkbox" style="width:20px;height:20px;accent-color:var(--orange)">Guardar también como trabajo frecuente</label><p style="margin-top:8px">Guarda descripción, precio por unidad y hoja MDF. Si usaste varias hojas, el precio se divide entre ellas: una hoja por trabajo. No copia cliente ni anticipo.</p></div><div class="form-footer"><button type="button" id="cancel-edit" class="btn btn-ghost hidden">Cancelar edición</button><span style="font-size:11px;color:var(--muted)">Los datos se comparten al guardar si Firebase está conectado.</span><button id="save-order" type="submit" class="btn btn-primary">Guardar pedido →</button></div></div>
+        </div><div class="info-note" style="margin-top:18px"><label style="display:flex;align-items:center;gap:10px;font-weight:700;color:var(--ink);cursor:pointer"><input id="save-as-work" type="checkbox" style="width:20px;height:20px;accent-color:var(--orange)">Guardar también como trabajo frecuente</label><p style="margin-top:8px">Guarda descripción, precio por unidad y material (MDF, termo u otro). El precio se divide entre la cantidad utilizada: un material por trabajo. No copia cliente ni anticipo.</p></div><div class="form-footer"><button type="button" id="cancel-edit" class="btn btn-ghost hidden">Cancelar edición</button><span style="font-size:11px;color:var(--muted)">Los datos se comparten al guardar si Firebase está conectado.</span><button id="save-order" type="submit" class="btn btn-primary">Guardar pedido →</button></div></div>
         <aside><div class="preview"><div class="eyebrow">VISTA PREVIA DEL PEDIDO</div><div class="summary-row"><span>Precio final al cliente</span><strong id="pv-total">$0</strong></div><div class="summary-row"><span>Venta sin IVA estimada</span><strong id="pv-base">$0</strong></div><div class="summary-row"><span>IVA (16%) del total</span><strong id="pv-iva">$0</strong></div><div class="summary-row"><span>Materiales</span><strong id="pv-material">$0</strong></div><div class="summary-row"><span>Otros costos</span><strong id="pv-extra">$0</strong></div><div class="summary-row total-box"><span>Utilidad estimada</span><strong style="color:var(--green)" id="pv-profit">$0</strong></div><div class="summary-row"><span>Anticipo recibido</span><strong id="pv-paid">$0</strong></div><div class="summary-row"><span>Por cobrar</span><strong id="pv-pending">$0</strong></div><div class="info-note warning"><strong>IVA:</strong> con factura se agrega 16% al precio capturado. Sin factura se mantiene el precio final y se desglosa el IVA incluido para la estimación administrativa. No se calcula IVA acreditable ni retenciones.</div></div></aside>
       </form>
     </section>
@@ -177,11 +177,11 @@ html[data-theme="dark"] .mobile-nav .nav.active{background:#21382f;color:#8be2be
 
     <section id="settings-view" class="view hidden"><div class="paper paper-pad" style="margin-bottom:24px">
 <div class="form-subtitle">Trabajos frecuentes</div>
-<p class="section-sub" style="margin-bottom:18px">Cada unidad utiliza una hoja MDF. Guarda el precio y la presentación de la hoja.</p>
+<p class="section-sub" style="margin-bottom:18px">Cada unidad utiliza una hoja MDF, un termo u otro material. Guarda el precio y su presentación.</p>
 <div id="work-feedback" class="info-note hidden" role="status" aria-live="polite" style="margin-bottom:16px"></div><form id="work-form" class="form-grid">
 <div class="field"><label for="work-name">Nombre del trabajo</label><input id="work-name" maxlength="120" placeholder="Altar / Altar de mascota / Portarretrato" required></div>
 <div class="field"><label for="work-price">Precio por trabajo ($)</label><input id="work-price" type="number" min="0.01" step="0.01" max="999999999" inputmode="decimal" required></div>
-<div class="field span2"><label for="work-material">Hoja MDF utilizada</label><select id="work-material" required><option value="">Primero guarda la hoja en el catálogo de materiales</option></select></div>
+<div class="field span2"><label for="work-material">Material utilizado</label><select id="work-material" required><option value="">Primero guarda el material en el catálogo</option></select></div>
 <div class="span2 form-footer"><button id="work-save" class="btn btn-primary" type="submit">Guardar trabajo</button><button id="work-cancel" class="btn btn-ghost hidden" type="button">Cancelar edición</button></div>
 </form>
 <div class="info-note" style="margin:18px 0">Precio antes del incremento por factura. Cambiarlo no modifica pedidos anteriores. También puedes ajustar el precio al crear cada pedido.</div>
@@ -213,6 +213,6 @@ themeChoice.addEventListener('change', () => {
  document.querySelector('meta[name="theme-color"]').content = themeChoice.value === 'dark' ? '#0b121b' : '#f6f7f7';
 });
 </script>
-<script type="module" src="./app.js?v=20261013-guardar-material"></script>
+<script type="module" src="./app.js?v=20261013-trabajos-termos"></script>
 </body>
 </html>
