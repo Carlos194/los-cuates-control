@@ -46,18 +46,18 @@ function workFeedback(message,error=false){
 let editingWork=null;
 function renderWorkMaterialOptions(){
  const select=$('work-material');if(!select)return;const old=select.value;
- select.innerHTML='<option value="">Selecciona la hoja MDF</option>'+state.catalog.filter(m=>m.type==='mdf').map(m=>'<option value="'+escapeHtml(m.id)+'">'+escapeHtml(m.name)+' · '+money(m.unitCost)+'</option>').join('');
+ select.innerHTML='<option value="">Selecciona el material</option>'+state.catalog.map(m=>'<option value="'+escapeHtml(m.id)+'">'+escapeHtml(m.name)+' · '+money(m.unitCost)+'</option>').join('');
  select.value=old;
 }
 function renderWorks(){
  const select=$('order-work');if(!select)return;const old=select.value;
  select.innerHTML='<option value="">Pedido personalizado</option>'+state.works.map(w=>'<option value="'+escapeHtml(w.id)+'">'+escapeHtml(w.name)+' · '+money(w.price)+'</option>').join('');select.value=old;
- $('work-list').innerHTML=state.works.map(w=>'<div class="expense-item"><div><strong>'+escapeHtml(w.name)+'</strong><div class="sub">1 hoja MDF por unidad</div></div><div><strong class="money">'+money(w.price)+'</strong> <button type="button" class="pill-button" data-edit-work="'+escapeHtml(w.id)+'">Editar</button></div></div>').join('')||'<div class="info-note">Guarda un altar, altar de mascota o portarretrato para repetirlo en nuevos pedidos.</div>';
+ $('work-list').innerHTML=state.works.map(w=>'<div class="expense-item"><div><strong>'+escapeHtml(w.name)+'</strong><div class="sub">1 material por unidad</div></div><div><strong class="money">'+money(w.price)+'</strong> <button type="button" class="pill-button" data-edit-work="'+escapeHtml(w.id)+'">Editar</button></div></div>').join('')||'<div class="info-note">Guarda un altar, altar de mascota o portarretrato para repetirlo en nuevos pedidos.</div>';
 }
 function workOrderValues(work,material,quantity){
  if(!Number.isSafeInteger(quantity)||quantity<1||quantity>10000)throw Error('Indica una cantidad entera de 1 a 10,000.');
- if(!material||material.type!=='mdf')throw Error('La hoja MDF no está disponible. Edita el trabajo frecuente.');
- return {price:round(work.price*quantity),description:work.name+' × '+quantity,material:{type:'mdf',name:material.name,qty:quantity,unitCost:material.unitCost}};
+ if(!material)throw Error('El material no está disponible. Edita el trabajo frecuente.');
+ return {price:round(work.price*quantity),description:work.name+' × '+quantity,material:{type:material.type,name:material.name,qty:quantity,unitCost:material.unitCost}};
 }
 function applyWork(){
  if(state.editing)return toast('Usa trabajos frecuentes al crear un pedido nuevo.',true);
@@ -73,7 +73,7 @@ function applyWork(){
 function resetWorkForm(){editingWork=null;$('work-form').reset();$('work-save').textContent='Guardar trabajo';$('work-cancel').classList.add('hidden');}
 async function saveWork(e){
  e.preventDefault();workFeedback('Guardando trabajo...');const name=$('work-name').value.trim(),price=round(Number($('work-price').value)),materialId=$('work-material').value;
- if(!name||!Number.isFinite(price)||price<=0||!state.catalog.some(m=>m.id===materialId&&m.type==='mdf'))return toast('Indica nombre, precio y una hoja MDF guardada.',true);
+ if(!name||!Number.isFinite(price)||price<=0||!state.catalog.some(m=>m.id===materialId))return toast('Indica nombre, precio y un material guardado.',true);
  const old=editingWork;const work={id:old?.id||freshId(),name,price,materialId,createdAt:old?.createdAt||isoDate(),updatedAt:isoDate(),updatedBy:state.user?.email||'Local'};
  const button=$('work-save');button.disabled=true;
  try{
@@ -83,7 +83,7 @@ async function saveWork(e){
  }catch(err){workFeedback(err.code==='permission-denied'?'Firebase bloqueó el guardado. Publica las reglas de works en Firestore y recarga la página.':'No se pudo guardar: '+err.message,true);toast('No se pudo guardar: '+err.message,true);}finally{button.disabled=false;}
 }
 function workListeners(){
- $('work-form').addEventListener('submit',saveWork);$('work-form').addEventListener('invalid',()=>workFeedback('Completa nombre, precio y hoja MDF antes de guardar.',true),true);$('work-cancel').addEventListener('click',resetWorkForm);
+ $('work-form').addEventListener('submit',saveWork);$('work-form').addEventListener('invalid',()=>workFeedback('Completa nombre, precio y material antes de guardar.',true),true);$('work-cancel').addEventListener('click',resetWorkForm);
  $('apply-work').addEventListener('click',applyWork);
  $('work-list').addEventListener('click',e=>{const button=e.target.closest('[data-edit-work]');if(!button)return;const work=state.works.find(w=>w.id===button.dataset.editWork);if(!work)return;editingWork={...work};$('work-name').value=work.name;$('work-price').value=work.price;$('work-material').value=work.materialId;$('work-save').textContent='Actualizar trabajo';$('work-cancel').classList.remove('hidden');$('work-name').focus();});
 }
@@ -161,11 +161,11 @@ async function changeStatus(id,status){
 function frequentWorkFromOrder(name, price, materials, catalog, creator){
  const cleanName=String(name||'').trim().replace(/\s*×\s*\d+\s*$/,'');
  if(!cleanName||cleanName.length>120)throw Error('Para guardar el trabajo, escribe una descripción de hasta 120 caracteres.');
- if(materials.length!==1||materials[0].type!=='mdf')throw Error('Este trabajo frecuente necesita una sola presentación de MDF. Puedes guardar el pedido sin marcar la casilla.');
+ if(materials.length!==1)throw Error('Este trabajo frecuente necesita una sola presentación de material (MDF, termo u otro). Puedes guardar el pedido sin marcar la casilla.');
  const used=materials[0];
- if(!Number.isSafeInteger(used.qty)||used.qty<1)throw Error('Indica una cantidad entera de hojas MDF.');
- const material=catalog.find(m=>m.type==='mdf'&&m.name===used.name);
- if(!material)throw Error('Primero guarda o selecciona esa hoja MDF en el catálogo de materiales.');
+ if(!Number.isSafeInteger(used.qty)||used.qty<1)throw Error('Indica una cantidad entera de unidades de material.');
+ const material=catalog.find(m=>m.type===used.type&&m.name===used.name);
+ if(!material)throw Error('Primero guarda o selecciona ese material en el catálogo. Si es nuevo, guarda primero el pedido con la casilla de material y después edítalo para guardar el trabajo frecuente.');
  const unitPrice=round(number(price)/used.qty);
  if(unitPrice<=0)throw Error('El precio por trabajo debe ser mayor que cero.');
  return {id:freshId(),name:cleanName,price:unitPrice,materialId:material.id,createdAt:isoDate(),updatedAt:isoDate(),updatedBy:creator};
@@ -225,6 +225,6 @@ function displayIdentity(value){
 function readableAuthError(err){const code=err?.code||'';if(code==='auth/invalid-credential'||code==='auth/wrong-password'||code==='auth/user-not-found')return 'Correo, usuario o contraseña incorrectos.';if(code==='auth/too-many-requests')return 'Demasiados intentos. Inténtalo más tarde.';if(code==='auth/unauthorized-domain')return 'Autoriza este dominio en Firebase Authentication.';return 'Error de acceso: '+(err?.message||'desconocido');}
 function accessLogin(pending=false){$('login').classList.remove('hidden');$('login-form').classList.toggle('hidden',pending);$('access-pending').classList.toggle('hidden',!pending);$('login-description').textContent=pending?'Tu cuenta necesita autorización del administrador.':'Inicia sesión con la cuenta creada para tu familia.';if(pending)$('pending-uid').textContent=state.user?.uid||'';}
 function leaveCloud(){state.unsubscribeWorks?.();state.unsubscribeWorks=null;state.works=[];state.unsubscribeCatalog?.();state.unsubscribeCatalog=null;state.catalog=[];state.unsubscribeOrders?.();state.unsubscribeExpenses?.();state.unsubscribeOrders=null;state.unsubscribeExpenses=null;state.orders=[];state.expenses=[];state.authorized=false;render();}
-async function initializeCloud(){try {const [appMod,authMod,fire]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js')]);const fbApp=appMod.initializeApp(firebaseConfig);const auth=authMod.getAuth(fbApp),db=fire.getFirestore(fbApp);state.firebase={auth,db,authMod,fire};authMod.onAuthStateChanged(auth,async user=>{leaveCloud();state.user=user;renderSettings();if(!user){accessLogin(false);return;}try{const snapshot=await fire.getDoc(fire.doc(db,'members',user.uid));if(!snapshot.exists()){accessLogin(true);return;}state.authorized=true;state.unsubscribeWorks=fire.onSnapshot(fire.collection(db,'works'),snapshot=>{state.works=snapshot.docs.map(d=>d.data());renderWorks();},e=>toast('Trabajos frecuentes: publica las reglas nuevas en Firebase. '+e.message,true));state.unsubscribeCatalog=fire.onSnapshot(fire.collection(db,'materials'),snapshot=>{state.catalog=snapshot.docs.map(d=>d.data());renderCatalog();},e=>{workFeedback('No se pudo cargar el catálogo MDF. Revisa las reglas de materials en Firebase y recarga.',true);toast('Catálogo: '+e.message,true);});$('login').classList.add('hidden');state.unsubscribeOrders=fire.onSnapshot(fire.collection(db,'orders'),snapshot=>{state.orders=snapshot.docs.map(d=>d.data());render();},e=>toast('Error al sincronizar pedidos: '+e.message,true));state.unsubscribeExpenses=fire.onSnapshot(fire.collection(db,'expenses'),snapshot=>{state.expenses=snapshot.docs.map(d=>d.data());render();},e=>toast('Error al sincronizar gastos: '+e.message,true));renderSettings();}catch(err){accessLogin(true);toast('Error de autorización: '+err.message,true);}});accessLogin(false);}catch(err){accessLogin(false);$('login-feedback').textContent='No se pudo conectar con Firebase: '+(err.message||err);$('login-form').querySelector('[type=submit]').disabled=true;}}
+async function initializeCloud(){try {const [appMod,authMod,fire]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js')]);const fbApp=appMod.initializeApp(firebaseConfig);const auth=authMod.getAuth(fbApp),db=fire.getFirestore(fbApp);state.firebase={auth,db,authMod,fire};authMod.onAuthStateChanged(auth,async user=>{leaveCloud();state.user=user;renderSettings();if(!user){accessLogin(false);return;}try{const snapshot=await fire.getDoc(fire.doc(db,'members',user.uid));if(!snapshot.exists()){accessLogin(true);return;}state.authorized=true;state.unsubscribeWorks=fire.onSnapshot(fire.collection(db,'works'),snapshot=>{state.works=snapshot.docs.map(d=>d.data());renderWorks();},e=>toast('Trabajos frecuentes: publica las reglas nuevas en Firebase. '+e.message,true));state.unsubscribeCatalog=fire.onSnapshot(fire.collection(db,'materials'),snapshot=>{state.catalog=snapshot.docs.map(d=>d.data());renderCatalog();},e=>{workFeedback('No se pudo cargar el catálogo de materiales. Revisa las reglas de materials en Firebase y recarga.',true);toast('Catálogo: '+e.message,true);});$('login').classList.add('hidden');state.unsubscribeOrders=fire.onSnapshot(fire.collection(db,'orders'),snapshot=>{state.orders=snapshot.docs.map(d=>d.data());render();},e=>toast('Error al sincronizar pedidos: '+e.message,true));state.unsubscribeExpenses=fire.onSnapshot(fire.collection(db,'expenses'),snapshot=>{state.expenses=snapshot.docs.map(d=>d.data());render();},e=>toast('Error al sincronizar gastos: '+e.message,true));renderSettings();}catch(err){accessLogin(true);toast('Error de autorización: '+err.message,true);}});accessLogin(false);}catch(err){accessLogin(false);$('login-feedback').textContent='No se pudo conectar con Firebase: '+(err.message||err);$('login-form').querySelector('[type=submit]').disabled=true;}}
 function init(){const d=new Date();$('today-date').textContent=d.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();addListeners();makeMaterialRow({type:'mdf',name:'80 × 60 cm',qty:1,unitCost:30});if(state.cloud){render();initializeCloud();}else{refreshLocal();}};
 init();
