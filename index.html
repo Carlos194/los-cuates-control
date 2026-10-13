@@ -136,6 +136,14 @@ tr[class^="order-"] td:first-child{border-left:5px solid #b6c1cb}
 .dashboard-order.order-green{background:#d5f4df;color:#163e28}
 .dashboard-order.order-red{background:#ffdddd;color:#582020}
 @media(max-width:400px){.dashboard-order{flex-direction:column}.dashboard-order-amount{text-align:left}}
+
+summary.dashboard-group-head{cursor:pointer;list-style:none;position:relative;padding-right:42px}
+summary.dashboard-group-head::-webkit-details-marker{display:none}
+summary.dashboard-group-head::after{content:'▸';position:absolute;right:18px;top:20px;font-size:22px;color:var(--ink)}
+details[open]>summary.dashboard-group-head::after{content:'▾'}
+summary.dashboard-group-head:focus-visible{outline:2px solid var(--orange);outline-offset:-3px}
+.group-toggle-label{display:block;color:var(--muted);font-size:11px;margin-top:8px}
+details:not([open])>summary.dashboard-group-head{border-bottom:0}
 </style>
 </head>
 <body>
@@ -245,6 +253,6 @@ themeChoice.addEventListener('change', () => {
  document.querySelector('meta[name="theme-color"]').content = themeChoice.value === 'dark' ? '#0b121b' : '#f6f7f7';
 });
 </script>
-<script type="module" src="./app.js?v=20261013-grupos"></script>
+<script type="module" src="./app.js?v=20261013-colapsar"></script>
 </body>
 </html>
