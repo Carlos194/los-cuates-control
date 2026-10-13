@@ -172,6 +172,17 @@ details:not([open])>summary.dashboard-group-head{border-bottom:0}
         <div class="metric"><div class="metric-top"><span class="metric-label">Utilidad estimada</span><span class="metric-icon">↗</span></div><div class="metric-value" id="kpi-profit">$0</div><div class="metric-caption">Antes de ISR y gastos faltantes</div></div>
         <div class="metric"><div class="metric-top"><span class="metric-label">IVA en cobros</span><span class="metric-icon">%</span></div><div class="metric-value orange" id="kpi-iva">$0</div><div class="metric-caption">Estimación para separar</div></div>
       </div>
+<div class="paper paper-pad" style="margin-bottom:24px">
+<div class="form-subtitle">Ganancia neta realizada</div>
+<div class="metric-value" id="net-value">$0.00</div>
+<p class="section-sub" id="net-caption"></p>
+<div class="short-summary" style="margin-top:18px">
+<div class="summary-row"><span>Ventas entregadas y pagadas, sin IVA</span><strong id="net-sales">$0.00</strong></div>
+<div class="summary-row"><span>Menos materiales y costos extra de esos pedidos</span><strong id="net-costs">$0.00</strong></div>
+<div class="summary-row"><span>Menos todos los gastos operativos registrados</span><strong id="net-operating">$0.00</strong></div>
+</div>
+<div class="info-note" style="margin-top:16px">Resultado operativo estimado antes de ISR y depreciación. Cuenta únicamente pedidos entregados y totalmente pagados; los anticipos y pedidos por cobrar se muestran por separado. Las compras de inventario se descuentan mediante el material utilizado, para evitar duplicarlas. El equipo se considera en recuperación de inversión. No incluye devoluciones ni pérdidas de pedidos cancelados; registra sus costos no recuperados como gastos operativos.</div>
+</div>
       <div class="grid2">
         <div><div class="section-head"><div><h2>Pedidos por etapa</h2><div class="section-sub">Del más antiguo al más nuevo dentro de cada grupo</div></div><button class="btn btn-ghost btn-sm" data-view="orders">Ver todos →</button></div><div id="dashboard-groups"></div></div>
         <div><div class="section-head"><div><h2>Resumen de ingresos</h2><div class="section-sub">Pedidos vigentes, IVA incluido</div></div></div><div class="paper paper-pad short-summary"><div><div class="summary-row"><span>Vendido</span><strong id="summary-sales">$0</strong></div><div class="bar-split"><span id="split-paid" style="width:0%;background:#248b71"></span><span id="split-pending" style="width:0%;background:#f0b073"></span></div><div class="legend"><span><i style="background:#248b71"></i>Cobrado</span><span><i style="background:#f0b073"></i>Pendiente</span></div></div><div class="summary-row"><span>Material asignado a pedidos</span><strong id="summary-material">$0</strong></div><div class="summary-row"><span>Gastos operativos generales</span><strong id="summary-operating">$0</strong></div><div class="summary-row"><span>Compras de inventario</span><strong id="summary-inventory">$0</strong></div><div class="summary-row"><span>Inversión en equipo</span><strong id="summary-equipment">$0</strong></div><div class="info-note"><strong>Evita duplicar gastos:</strong> comprar MDF o termos es inventario; el material se vuelve costo de un pedido cuando lo utilizas. El dinero invertido en maquinaria se registra aparte.</div></div><div class="paper paper-pad" style="margin-top:20px">
@@ -253,6 +264,6 @@ themeChoice.addEventListener('change', () => {
  document.querySelector('meta[name="theme-color"]').content = themeChoice.value === 'dark' ? '#0b121b' : '#f6f7f7';
 });
 </script>
-<script type="module" src="./app.js?v=20261013-colapsar"></script>
+<script type="module" src="./app.js?v=20261013-ganancia-neta"></script>
 </body>
 </html>
