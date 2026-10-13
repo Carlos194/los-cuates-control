@@ -114,7 +114,17 @@ html[data-theme="dark"] .mobile-nav .nav.active{background:#21382f;color:#8be2be
  .material-row .material-remove{grid-column:3;grid-row:1/4}
  #catalog-list .expense-item{flex-wrap:wrap}
 }
-  </style>
+  
+.order-white td{background:#f4f6f8!important;color:#162637!important}
+.order-yellow td{background:#fff1be!important;color:#3c3010!important}
+.order-green td{background:#d5f4df!important;color:#163e28!important}
+.order-red td{background:#ffdddd!important;color:#582020!important}
+tr[class^="order-"] .order-sub,tr[class^="order-"] .order-title{color:inherit!important}
+tr[class^="order-"] td:first-child{border-left:5px solid #b6c1cb}
+.order-yellow td:first-child{border-left-color:#dba526}
+.order-green td:first-child{border-left-color:#29925b}
+.order-red td:first-child{border-left-color:#d75151}
+</style>
 </head>
 <body>
 <div class="mobile-top"><div class="logo"><svg viewBox="0 0 32 32" fill="none"><path d="M8 25 23 6M16 7h10M23 6v10M5 9l4 3-4 3-4-3 4-3Zm20 12 4 3-4 3-4-3 4-3ZM12 25l3 2-3 2-3-2 3-2Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="brand-title">Los Cuates</div><div class="brand-sub">CORTE LÁSER</div></div></div>
@@ -223,6 +233,6 @@ themeChoice.addEventListener('change', () => {
  document.querySelector('meta[name="theme-color"]').content = themeChoice.value === 'dark' ? '#0b121b' : '#f6f7f7';
 });
 </script>
-<script type="module" src="./app.js?v=20261013-inversion"></script>
+<script type="module" src="./app.js?v=20261013-colores-eliminar"></script>
 </body>
 </html>
