@@ -124,6 +124,18 @@ tr[class^="order-"] td:first-child{border-left:5px solid #b6c1cb}
 .order-yellow td:first-child{border-left-color:#dba526}
 .order-green td:first-child{border-left-color:#29925b}
 .order-red td:first-child{border-left-color:#d75151}
+
+#dashboard-groups{display:grid;gap:14px}
+.dashboard-group-head{padding:16px;border-bottom:1px solid var(--line)}
+.dashboard-group-head h3{font-size:15px}.dashboard-group-head h3 span{font-weight:500}
+.dashboard-order{padding:16px;display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #bbc4c9}
+.dashboard-order>div{min-width:0;overflow-wrap:anywhere}.dashboard-order-amount{text-align:right;flex-shrink:0}
+.dashboard-order .order-sub{color:inherit!important}.dashboard-order button{margin-top:8px}
+.dashboard-order.order-white{background:#f4f6f8;color:#162637}
+.dashboard-order.order-yellow{background:#fff1be;color:#3c3010}
+.dashboard-order.order-green{background:#d5f4df;color:#163e28}
+.dashboard-order.order-red{background:#ffdddd;color:#582020}
+@media(max-width:400px){.dashboard-order{flex-direction:column}.dashboard-order-amount{text-align:left}}
 </style>
 </head>
 <body>
@@ -153,7 +165,7 @@ tr[class^="order-"] td:first-child{border-left:5px solid #b6c1cb}
         <div class="metric"><div class="metric-top"><span class="metric-label">IVA en cobros</span><span class="metric-icon">%</span></div><div class="metric-value orange" id="kpi-iva">$0</div><div class="metric-caption">Estimación para separar</div></div>
       </div>
       <div class="grid2">
-        <div><div class="section-head"><div><h2>Pedidos recientes</h2><div class="section-sub">Movimientos de toda la familia</div></div><button class="btn btn-ghost btn-sm" data-view="orders">Ver todos →</button></div><div class="paper table-scroll"><table><thead><tr><th>Pedido</th><th>Estado</th><th>Total</th><th>Por cobrar</th></tr></thead><tbody id="recent-tbody"></tbody></table><div id="recent-empty" class="empty hidden"><h3>Sin pedidos todavía</h3><p>Registra tu primera orden para empezar a ver el resumen.</p></div></div></div>
+        <div><div class="section-head"><div><h2>Pedidos por etapa</h2><div class="section-sub">Del más antiguo al más nuevo dentro de cada grupo</div></div><button class="btn btn-ghost btn-sm" data-view="orders">Ver todos →</button></div><div id="dashboard-groups"></div></div>
         <div><div class="section-head"><div><h2>Resumen de ingresos</h2><div class="section-sub">Pedidos vigentes, IVA incluido</div></div></div><div class="paper paper-pad short-summary"><div><div class="summary-row"><span>Vendido</span><strong id="summary-sales">$0</strong></div><div class="bar-split"><span id="split-paid" style="width:0%;background:#248b71"></span><span id="split-pending" style="width:0%;background:#f0b073"></span></div><div class="legend"><span><i style="background:#248b71"></i>Cobrado</span><span><i style="background:#f0b073"></i>Pendiente</span></div></div><div class="summary-row"><span>Material asignado a pedidos</span><strong id="summary-material">$0</strong></div><div class="summary-row"><span>Gastos operativos generales</span><strong id="summary-operating">$0</strong></div><div class="summary-row"><span>Compras de inventario</span><strong id="summary-inventory">$0</strong></div><div class="summary-row"><span>Inversión en equipo</span><strong id="summary-equipment">$0</strong></div><div class="info-note"><strong>Evita duplicar gastos:</strong> comprar MDF o termos es inventario; el material se vuelve costo de un pedido cuando lo utilizas. El dinero invertido en maquinaria se registra aparte.</div></div><div class="paper paper-pad" style="margin-top:20px">
 <div class="form-subtitle">¿Ya recuperamos la inversión?</div>
 <div class="summary-row"><span>Balance de efectivo acumulado</span><strong id="investment-cash">$0.00</strong></div>
@@ -233,6 +245,6 @@ themeChoice.addEventListener('change', () => {
  document.querySelector('meta[name="theme-color"]').content = themeChoice.value === 'dark' ? '#0b121b' : '#f6f7f7';
 });
 </script>
-<script type="module" src="./app.js?v=20261013-colores-corregidos"></script>
+<script type="module" src="./app.js?v=20261013-grupos"></script>
 </body>
 </html>
