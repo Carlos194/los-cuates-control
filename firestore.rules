@@ -60,7 +60,10 @@ service cloud.firestore {
         && request.resource.data.materials.size() <= 50
         && request.resource.data.payments is list
         && request.resource.data.payments.size() <= 250;
-      allow delete: if false;
+      allow delete: if member()
+        && resource.data.status == 'cancel'
+        && resource.data.payments is list
+        && resource.data.payments.size() == 0;
     }
     match /expenses/{expenseId} {
       allow read: if member();
