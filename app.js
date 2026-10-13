@@ -75,7 +75,21 @@ function renderDashboardGroups(){
  }).join('');
 }
 
-function renderDashboard(){const t=totals();renderInvestment(t);$('kpi-collected').textContent=money(t.allCashReceived);$('kpi-pending').textContent=money(t.pending);$('kpi-profit').textContent=money(t.profit);$('kpi-iva').textContent=money(t.iva);$('summary-sales').textContent=money(t.sold);$('summary-material').textContent=money(t.materials);$('summary-operating').textContent=money(t.operating);$('summary-inventory').textContent=money(t.inventory);$('summary-equipment').textContent=money(t.equipment);const sum=t.sold||1;$('split-paid').style.width=`${Math.min(100,t.collected/sum*100)}%`;$('split-pending').style.width=`${Math.min(100,t.pending/sum*100)}%`;
+function realizedNet(orders, expenses){
+ const completed=orders.filter(o=>o.status==='done'&&calc(o).pending<=0);
+ const sales=round(completed.reduce((sum,o)=>sum+calc(o).base,0));
+ const costs=round(completed.reduce((sum,o)=>{const c=calc(o);return sum+c.material+c.extra;},0));
+ const operating=round(expenses.filter(e=>e.type==='operating').reduce((sum,e)=>sum+number(e.amount),0));
+ return {sales,costs,operating,net:round(sales-costs-operating),count:completed.length};
+}
+function renderRealizedNet(){
+ const n=realizedNet(state.orders,state.expenses);
+ $('net-value').textContent=money(n.net);$('net-value').style.color=n.net<0?'#ff9c9c':'#70d8b0';
+ $('net-sales').textContent=money(n.sales);$('net-costs').textContent=money(n.costs);$('net-operating').textContent=money(n.operating);
+ $('net-caption').textContent=n.count+' pedidos entregados y pagados · '+(n.net<0?'Resultado negativo':'Resultado positivo');
+}
+
+function renderDashboard(){const t=totals();renderRealizedNet();renderInvestment(t);$('kpi-collected').textContent=money(t.allCashReceived);$('kpi-pending').textContent=money(t.pending);$('kpi-profit').textContent=money(t.profit);$('kpi-iva').textContent=money(t.iva);$('summary-sales').textContent=money(t.sold);$('summary-material').textContent=money(t.materials);$('summary-operating').textContent=money(t.operating);$('summary-inventory').textContent=money(t.inventory);$('summary-equipment').textContent=money(t.equipment);const sum=t.sold||1;$('split-paid').style.width=`${Math.min(100,t.collected/sum*100)}%`;$('split-pending').style.width=`${Math.min(100,t.pending/sum*100)}%`;
 renderDashboardGroups();}
 function orderColor(o){
  const c=calc(o);
